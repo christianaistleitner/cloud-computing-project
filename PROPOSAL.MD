@@ -1,4 +1,4 @@
-# Proposal: Implementation of our own Continuous Deployment (CD) Pipeline
+# Proposal
 
 Authors: Christian Aistleitner, Marcel Brunnbauer, Martin Zwifl
 
