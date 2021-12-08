@@ -8,4 +8,4 @@
 
 ## Project Idea
 
-TODO
+Implementation of Continuous Deployment (CD) Pipeline
