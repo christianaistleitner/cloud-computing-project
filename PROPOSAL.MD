@@ -12,6 +12,7 @@ It aims for gaining additional hands-on experience and therefore, we concentrate
 ## Milestones
 
 - 08.12.2021 Proposal pulication
+- 15.12.2021 Proposal refinement and acception
 - some steps in between
 - 19.1.2022 Final Presentation
 
