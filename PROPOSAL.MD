@@ -1,6 +1,6 @@
 # Proposal: Implementation of Continuous Deployment (CD) Pipeline
 
-Last updated: 08.12.2021 14:48
+Last updated: 08.12.2021 14:53
 
 ## Authors
 - [Christian Aistleitner](https://github.com/christianaistleitner)
