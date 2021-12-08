@@ -3,9 +3,9 @@
 Last updated: 08.12.2021 14:48
 
 ## Authors
-- Christian Aistleitner
-- Marcel Brunnbauer
-- Martin Zwifl
+- [Christian Aistleitner](https://github.com/christianaistleitner)
+- [Marcel Brunnbauer](https://github.com/Marcel256)
+- [Martin Zwifl](https://github.com/martin-zwifl)
 
 ## Abstract
 This project is an assignment for the course 510.211 Special Topics - Cloud Computing (2021W), held at the Johannes Kepler University, Linz.
