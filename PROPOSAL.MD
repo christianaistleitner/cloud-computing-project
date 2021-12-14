@@ -21,7 +21,7 @@ The aim is to demonstrate the possibilities of CD with cloud technology.
 As an open-source cloud native Continuous Integration and Deployment solution, it is applicable accross destinations using a customised Kubernetes Cluster.
 It can be seperated into four components:
 - [Pipelines](https://tekton.dev/docs/pipelines) and tasks form building blocks of a workflow
-- [Triggers](https://tekton.dev/docs/triggers) of events for workflows
+- [Triggers](https://tekton.dev/docs/triggers) of events for to ensure the right timing within workflows
 - [Command-Line-Interface](https://tekton.dev/docs/cli) for workflow management
 - [Dashboard](https://tekton.dev/docs/dashboard) General User-Interface
 
