@@ -17,6 +17,14 @@ Therefore, we use the tool [Tekton](https://tekton.dev/) allowing us to build, t
 For reasons of closeness to reality, we use a two-stage environment (i.e. development and production).
 The aim is to demonstrate the possibilities of CD with cloud technology.
 
+## Tekton
+As an open-source cloud native Continuous Integration and Deployment solution, it is applicable accross destinations using a custormised Kubernetes Cluster.
+It can be seperated into four components:
+- [Pipelines](https://tekton.dev/docs/pipelines) formed by tasks consisting of simple building blocks of a workflow
+- [Triggers](https://tekton.dev/docs/triggers) of events for workflows
+- [Command-Line-Interface](https://tekton.dev/docs/cli) for workflow management
+- [Dashboard](https://tekton.dev/docs/dashboard) General User-Interface
+
 ## Milestones
 - Proposal pulication (Deadline: 08.12.2021)
 - Proposal refinement and acception (Deadline: 15.12.2021)
