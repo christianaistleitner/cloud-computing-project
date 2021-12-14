@@ -18,8 +18,8 @@ For reasons of closeness to reality, we use a two-stage environment (i.e. develo
 The aim is to demonstrate the possibilities of CD with cloud technology.
 
 ## Key Concepts - Tekton
-As an open-source cloud native Continuous Integration and Deployment solution, it is applicable accross destinations using a customised Kubernetes Cluster.
-It can be seperated into four components:
+As an open-source cloud native Continuous Integration and Deployment solution, it is applicable across destinations using a customised Kubernetes Cluster.
+It can be separated into four components:
 - [Pipelines](https://tekton.dev/docs/pipelines) and tasks form building blocks of a workflow
 - [Triggers](https://tekton.dev/docs/triggers) of events for to ensure the right timing within workflows
 - [Command-Line-Interface](https://tekton.dev/docs/cli) for workflow management
