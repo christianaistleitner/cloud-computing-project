@@ -25,6 +25,9 @@ It can be separated into four components:
 - [Command-Line-Interface](https://tekton.dev/docs/cli) for workflow management
 - [Dashboard](https://tekton.dev/docs/dashboard) General User-Interface
 
+## Architecture Diagram
+![Architecture Diagram](./assets/arch.png)
+
 ## Milestones
 - Proposal pulication (Deadline: 08.12.2021)
 - Proposal refinement and acception (Deadline: 15.12.2021)
