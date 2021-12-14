@@ -17,13 +17,23 @@ Therefore, we use the tool [Tekton](https://tekton.dev/) allowing us to build, t
 For reasons of closeness to reality, we use a two-stage environment (i.e. development and production).
 The aim is to demonstrate the possibilities of CD with cloud technology.
 
-## Key Concepts - Tekton
-As an open-source cloud native Continuous Integration and Deployment solution, it is applicable across destinations using a customised Kubernetes Cluster.
-It can be separated into four components:
-- [Pipelines](https://tekton.dev/docs/pipelines) and tasks form building blocks of a workflow
-- [Triggers](https://tekton.dev/docs/triggers) of events for to ensure the right timing within workflows
+## Key Concepts
+Tekton is an open-source cloud-native Continuous Integration and Deployment solution running on Kubernetes clusters. It can be separated into the following components:
+
+Building blocks of a workflow:
+- [Pipelines](https://tekton.dev/docs/pipelines) execute tasks with themself contain one or multiple steps
+- [Triggers](https://tekton.dev/docs/triggers) instantiate pipelines runs and ensure the right timing within workflows
+
+Workflow management:
 - [Command-Line-Interface](https://tekton.dev/docs/cli) for workflow management
-- [Dashboard](https://tekton.dev/docs/dashboard) General User-Interface
+- [Dashboard](https://tekton.dev/docs/dashboard) in case you prefer a graphical interface
+
+Workflow repository:
+- [Catalog](https://tekton.dev/docs/catalog) is a repository containing predefined building blocks
+- [Hub](https://hub.tekton.dev/) is a web app used for accessing the Tekton Catalog
+
+Kubernetes integration:
+- [Operator](https://tekton.dev/docs/operator) is a Kubernetes extension that allows us to manage Tekton components
 
 ## Architecture Diagram
 ![Architecture Diagram](./assets/arch.png)
