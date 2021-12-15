@@ -1,6 +1,6 @@
 # Proposal: Implementation of Continuous Deployment (CD) Pipeline
 
-Last updated: 08.12.2021 14:53
+Last updated: 15.12.2021 14:15
 
 ## Authors
 - [Christian Aistleitner](https://github.com/christianaistleitner)
@@ -21,7 +21,7 @@ The aim is to demonstrate the possibilities of CD with cloud technology.
 Tekton is an open-source cloud-native Continuous Integration and Deployment solution running on Kubernetes clusters. It can be separated into the following components:
 
 Building blocks of a workflow:
-- [Pipelines](https://tekton.dev/docs/pipelines) execute tasks with themself contain one or multiple steps
+- [Pipelines](https://tekton.dev/docs/pipelines) execute tasks which themself contain one or multiple steps
 - [Triggers](https://tekton.dev/docs/triggers) instantiate pipelines runs and ensure the right timing within workflows
 
 Workflow management:
@@ -37,6 +37,18 @@ Kubernetes integration:
 
 ## Architecture Diagram
 ![Architecture Diagram](./assets/arch.png)
+
+The staging process consists of the following steps:
+1. A GitHub Action sends an HTTP request to the Tekton webhook endpoint on our cluster.
+2. Based on what changed in the git repository and on which branch those changes were made, Tekton start a pipeline run.
+    - The git repository gets cloned/downloaded.
+    - The web application gets built.
+    - A new container image gets created and tagged with the app version number.
+    - Finally, the image tag in the corresponding K8s deployment gets updated.
+3. Kubernetes starts a rolling release.
+4. And lastly, the updated web application can be accessed via Ingress
+    - http://dev.sample-web-app... points at our development environment
+    - http://prod.sample-web-app... points at our production environment
 
 ## Milestones
 - Proposal pulication (Deadline: 08.12.2021)
