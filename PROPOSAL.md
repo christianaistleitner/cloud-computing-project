@@ -1,6 +1,6 @@
 # Proposal: Implementation of Continuous Deployment (CD) Pipeline
 
-Last updated: 15.12.2021 14:20
+Last updated: 15.12.2021 14:30
 
 ## Authors
 - [Christian Aistleitner](https://github.com/christianaistleitner)
@@ -44,6 +44,7 @@ The staging process consists of the following steps:
     - The git repository gets cloned/downloaded.
     - The web application gets built.
     - A new container image gets created and tagged with the app version number.
+    - The new image gets pushed to a private registry.
     - Finally, the image tag in the corresponding K8s deployment gets updated.
 3. Kubernetes starts a rolling release.
 4. And lastly, the updated web application can be accessed via Ingress
