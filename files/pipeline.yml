@@ -1,0 +1,15 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: main-pipeline-with-parameters
+spec:
+  tasks:
+    - name: clone-repo
+      taskRef:
+        name: git-clone
+    - name: build-publish-app
+      taskRef:
+        name: docker-build
+#    - name: deploy-app
+#      taskRef:
+#        name: docker-deploy
