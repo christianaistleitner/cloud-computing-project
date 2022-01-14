@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: servebeer-staging-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: servebeer-staging
+  template:
+    metadata:
+      labels:
+        app: servebeer-staging
+    spec:
+      containers:
+      - name: servebeer-staging
+        image: crix128/servebeer:0.0.1
+        ports:
+        - containerPort: 8080
