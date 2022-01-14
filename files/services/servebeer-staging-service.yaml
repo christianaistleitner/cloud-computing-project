@@ -6,9 +6,9 @@ metadata:
     app: servebeer-staging
 spec:
   ports:
-  - port: 8080
+  - port: 8001
     protocol: TCP
-    targetPort: 8001
+    targetPort: 8080
   selector:
     app: servebeer-staging
   type: ClusterIP

@@ -6,9 +6,9 @@ metadata:
     app: servebeer-production
 spec:
   ports:
-  - port: 8080
+  - port: 8888
     protocol: TCP
-    targetPort: 8888
+    targetPort: 8080
   selector:
     app: servebeer-production
   type: ClusterIP
