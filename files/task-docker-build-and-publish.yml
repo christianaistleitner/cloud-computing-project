@@ -54,15 +54,6 @@ spec:
   steps:
   - name: docker-build-and-publish
     image: docker:dind
-    args:
-      - --storage-driver=vfs
-      - --userland-proxy=false
-      - --debug
-      - --insecure-registry=$(params.insecure_registry)
-    env:
-      # Connect to the sidecar over TCP, with TLS.
-      - name: DOCKER_HOST
-        value: tcp://localhost:2376
     securityContext:
       privileged: true
     workingDir: $(workspaces.source.path)
