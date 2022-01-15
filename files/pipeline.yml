@@ -10,6 +10,14 @@ spec:
 #      type: image
   workspaces:
     - name: source-code
+      volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+
   tasks:
     - name: clone-repo
       taskRef:
