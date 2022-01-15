@@ -3,20 +3,29 @@ kind: Pipeline
 metadata:
   name: main-pipeline
 spec:
-  resources:
-    - name: my-repo
-      type: git
-    - name: my-image
-      type: image
+#  resources:
+#    - name: my-repo
+#      type: git
+#    - name: my-image
+#      type: image
+  workspaces:
+    - name: source-code
   tasks:
     - name: clone-repo
       taskRef:
         name: git-clone
+      workspaces:
+        - name: output
+          workspace: source-code
     - name: build-publish-app
       taskRef:
         name: docker-build
+      workspaces:
+        - name: source
+          workspace: source-code
       runAfter:
         - clone-repo
+        
 #    - name: deploy-app
 #      taskRef:
 #        name: docker-deploy
