@@ -48,9 +48,6 @@ spec:
     default: ""
   workspaces:
   - name: source
-  results:
-  - name: IMAGE_DIGEST
-    description: Digest of the image just built.
   steps:
   - name: docker-build-and-publish
     image: docker:dind
@@ -63,7 +60,3 @@ spec:
         --no-cache \
         -f $(params.dockerfile) -t $(params.image) $(params.context)
       docker push $(params.push_extra_args) $(params.image)
-    readinessProbe:
-      periodSeconds: 1
-      exec:
-        command: ['ls', '/certs/client/ca.pem']
