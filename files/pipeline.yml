@@ -22,7 +22,7 @@ spec:
           workspace: source-code
     - name: build-publish-app
       taskRef:
-        name: docker-build
+        name: docker-build-and-publish
       params:
         - name: image
           value: crix128/servebeer:latest
