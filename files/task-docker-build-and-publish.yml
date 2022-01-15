@@ -53,14 +53,13 @@ spec:
     image: docker
     workingDir: $(workspaces.source.path)
     script: |
-      sleep 3600
       docker build \
         $(params.build_extra_args) \
         --no-cache \
         -f $(params.dockerfile) -t $(params.image) $(params.context)
       docker push $(params.push_extra_args) $(params.image)
     volumeMounts:
-    - mountPath: /run/docker
+    - mountPath: /var/run/
       name: dind-socket
 
   sidecars:
@@ -71,7 +70,7 @@ spec:
     volumeMounts:
     - mountPath: /var/lib/docker
       name: dind-storage
-    - mountPath: /run/docker
+    - mountPath: /var/run/
       name: dind-socket
 
 
