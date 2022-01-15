@@ -26,6 +26,8 @@ spec:
       params:
         - name: image
           value: crix128/servebeer:latest
+        - name: dind-iamge
+          value: docker:18.05-dind
       workspaces:
         - name: source
           workspace: source-code
