@@ -62,7 +62,7 @@ spec:
     env:
       # Connect to the sidecar over TCP, with TLS.
       - name: DOCKER_HOST
-        value: tcp://localhost:2375
+        value: tcp://localhost:2376
     securityContext:
       privileged: true
     workingDir: $(workspaces.source.path)
