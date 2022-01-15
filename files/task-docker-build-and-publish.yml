@@ -59,6 +59,10 @@ spec:
       - --userland-proxy=false
       - --debug
       - --insecure-registry=$(params.insecure_registry)
+    env:
+      # Connect to the sidecar over TCP, with TLS.
+      - name: DOCKER_HOST
+        value: tcp://localhost:2375
     securityContext:
       privileged: true
     workingDir: $(workspaces.source.path)
