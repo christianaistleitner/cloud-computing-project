@@ -59,6 +59,8 @@ spec:
       - --userland-proxy=false
       - --debug
       - --insecure-registry=$(params.insecure_registry)
+    securityContext:
+      privileged: true
     workingDir: $(workspaces.source.path)
     script: |
       docker build \
