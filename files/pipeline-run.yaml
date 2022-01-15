@@ -3,15 +3,14 @@ kind: PipelineRun
 metadata:
   generateName: main-pipeline-run-
 spec:
-  serviceAccountName: docker-service-account
   pipelineRef:
     name: main-pipeline
   workspaces:
-    - name: source-code
-      volumeClaimTemplate:
-        spec:
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 1Gi
+  - name: source-code
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
