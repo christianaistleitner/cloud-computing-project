@@ -23,9 +23,9 @@ spec:
     - name: build-publish-app
       taskRef:
         name: docker-build
-        params:
-          - name: image
-            value: crix128/servebeer:latest
+      params:
+        - name: image
+          value: crix128/servebeer:latest
       workspaces:
         - name: source
           workspace: source-code
