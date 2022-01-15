@@ -58,7 +58,19 @@ spec:
         $(params.build_extra_args) \
         --no-cache \
         -f $(params.dockerfile) -t $(params.image) $(params.context)
+      docker login -u $USERNAME -p $TOKEN
       docker push $(params.push_extra_args) $(params.image)
+    env:
+    - name: USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: docker-credentials
+          key: username
+    - name: TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: docker-credentials
+          key: password
     volumeMounts:
     - mountPath: /var/run/
       name: dind-socket
@@ -68,7 +80,6 @@ spec:
     name: server
     securityContext:
       privileged: true
-      runAsUser: 0
     volumeMounts:
     - mountPath: /var/lib/docker
       name: dind-storage
