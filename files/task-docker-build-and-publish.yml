@@ -64,8 +64,15 @@ spec:
     volumeMounts:
     - mountPath: /var/lib/docker
       name: dind-storage
-    - mountPath: /var/run/
+    - mountPath: /run/docker
       name: dind-socket
+
+  sidecars:
+  - image: docker:dind
+    name: server
+    securityContext:
+      privileged: true
+
   volumes:
   - name: dind-storage
     emptyDir: {}
