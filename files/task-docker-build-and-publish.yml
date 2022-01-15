@@ -50,7 +50,7 @@ spec:
   - name: source
   steps:
   - name: docker-build-and-publish
-    image: docker:dind
+    image: docker:18.05-dind
     securityContext:
       privileged: true
     workingDir: $(workspaces.source.path)
