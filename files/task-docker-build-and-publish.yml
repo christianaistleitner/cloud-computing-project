@@ -55,6 +55,7 @@ spec:
       privileged: true
     workingDir: $(workspaces.source.path)
     script: |
+      sh
       docker build \
         $(params.build_extra_args) \
         --no-cache \
