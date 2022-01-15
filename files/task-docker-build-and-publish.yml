@@ -50,9 +50,7 @@ spec:
   - name: source
   steps:
   - name: docker-build-and-publish
-    image: docker:18.05-dind
-    securityContext:
-      privileged: true
+    image: docker
     workingDir: $(workspaces.source.path)
     script: |
       sleep 3600
@@ -62,8 +60,6 @@ spec:
         -f $(params.dockerfile) -t $(params.image) $(params.context)
       docker push $(params.push_extra_args) $(params.image)
     volumeMounts:
-    - mountPath: /var/lib/docker
-      name: dind-storage
     - mountPath: /run/docker
       name: dind-socket
 
@@ -72,6 +68,12 @@ spec:
     name: server
     securityContext:
       privileged: true
+    volumeMounts:
+    - mountPath: /var/lib/docker
+      name: dind-storage
+    - mountPath: /run/docker
+      name: dind-socket
+
 
   volumes:
   - name: dind-storage
