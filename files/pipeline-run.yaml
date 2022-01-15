@@ -1,8 +1,10 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
+  namespace: default
   generateName: main-pipeline-run-
 spec:
+  serviceAccountName: default
   pipelineRef:
     name: main-pipeline
   workspaces:
