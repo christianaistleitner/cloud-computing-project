@@ -20,7 +20,7 @@ spec:
       workspaces:
         - name: output
           workspace: source-code
-    - name: build-publish-app
+    - name: build-image
       taskRef:
         name: docker-publish
       params:
