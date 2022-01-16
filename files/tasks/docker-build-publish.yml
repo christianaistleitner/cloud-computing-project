@@ -47,7 +47,7 @@ spec:
         secretKeyRef:
           name: $(params.docker-credentials-secret)
           key: username
-    - name: TOKEN
+    - name: PASSWORD
       valueFrom:
         secretKeyRef:
           name: $(params.docker-credentials-secret)
