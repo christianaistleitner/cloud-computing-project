@@ -1,0 +1,43 @@
+
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: triggers-pipeline
+spec:
+  params:
+    - name: commits
+      description: commits pushed in the branch
+      type: string
+    - name: filename
+      type: string
+      description: filename which we need to check
+    - name: urlToCurl
+      type: string
+      description: The URL which we want to curl
+    - name: options
+      type: array
+      description: The extra options which needs to be provided at the time of making a curl request.
+  tasks:
+    - name: check-file-changed
+      taskRef:
+        name: check-file-changed
+      params:
+        - name: commits
+          value: $(params.commits)
+        - name: filename
+          value: $(params.filename)
+    - name: trigger-api
+      runAfter:
+        - "check-file-changed"
+      taskRef:
+        name: curl
+      when:
+        - input: "$(tasks.check-file-changed.results.is_file_changed)"
+          operator: in
+          values: ["yes"]
+      params:
+        - name: url
+          value: "$(params.urlToCurl)"
+        - name: options
+          value:
+            - "$(params.options)"
