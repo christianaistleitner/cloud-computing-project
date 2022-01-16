@@ -22,12 +22,20 @@ spec:
           workspace: source-code
     - name: build-publish-app
       taskRef:
-        name: docker-build-and-publish
+        name: docker-publish
       params:
         - name: image
           value: crix128/servebeer:latest
-        - name: dind_image
-          value: docker:18.09-dind
+        - name: docker-username
+          valueFrom:
+            secretKeyRef:
+              name: docker-credentials
+              key: username
+        - name: docker-password
+          valueFrom:
+            secretKeyRef:
+              name: docker-credentials
+              key: password
       workspaces:
         - name: source
           workspace: source-code

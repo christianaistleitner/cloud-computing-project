@@ -1,0 +1,75 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: docker-publish
+spec:
+  description: This task will build and push an image using Docker.
+  params:
+  - name: image
+    description: Name of the image Docker will produce.
+  - name: dockerfile
+    description: Path to the Dockerfile to build.
+    default: ./Dockerfile
+  - name: context
+    description: Path to the directory to use as context.
+    default: .
+  - name: docker-username
+    description: Username for login on Docker Hub
+  - name: docker-password
+    description: Password or token for login on Docker Hub.
+  workspaces:
+  - name: source
+  results:
+  - name: IMAGE_DIGEST
+    description: Digest of the image just built.
+  steps:
+  - name: docker-build
+    image: docker
+    env:
+    - name: DOCKER_TLS_CERTDIR
+      value: /certs/client
+    workingDir: $(workspaces.source.path)
+    script: docker build --no-cache -f $(params.dockerfile) -t $(params.image) $(params.context)
+    volumeMounts:
+      - mountPath: /certs/client
+        name: dind-certs
+  - name: docker-login
+    image: docker
+    env:
+    - name: DOCKER_TLS_CERTDIR
+      value: /certs/client
+    workingDir: $(workspaces.source.path)
+    script: docker login -u $(params.docker-username) -p $(params.docker-password)
+    volumeMounts:
+      - mountPath: /certs/client
+        name: dind-certs
+  - name: docker-push
+    image: docker
+    env:
+    - name: DOCKER_TLS_CERTDIR
+      value: /certs/client
+    workingDir: $(workspaces.source.path)
+    script: docker push $(params.image)
+    volumeMounts:
+      - mountPath: /certs/client
+        name: dind-certs
+  sidecars:
+  - image: $(params.dind_image)
+    name: docker-server
+    securityContext:
+      privileged: true
+    env:
+    # Write generated certs to the path shared with the client.
+    - name: DOCKER_TLS_CERTDIR
+      value: /certs
+    volumeMounts:
+    - mountPath: /certs/client
+      name: dind-certs
+    # Wait for the dind daemon to generate the certs it will share with the client.
+    readinessProbe:
+      periodSeconds: 1
+      exec:
+        command: ['ls', '/certs/client/ca.pem']
+  volumes:
+  - name: dind-certs
+    emptyDir: {}
