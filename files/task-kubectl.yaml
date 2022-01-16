@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: kubectl
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.12.1"
+    tekton.dev/categories: Kubernetes
+    tekton.dev/tags: deploy, delete
+    tekton.dev/platforms: "linux/amd64"
+  namespace: default
+spec:
+  description: >-
+    This Task deploys (or delete) a Kubernetes resource (pod). It uses
+    kubectl for that.
+  params:
+  - name: args
+    description: kubectl arguments
+  steps:
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    args:
+      - $(params.action)

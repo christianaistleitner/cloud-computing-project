@@ -33,9 +33,11 @@ spec:
           workspace: source-code
       runAfter:
         - clone-repo
-
-#    - name: deploy-app
-#      taskRef:
-#        name: docker-deploy
-#      runAfter:
-#        - clone-repo
+    - name: deploy-app
+      taskRef:
+        name: kubectl
+      params:
+        - name: args
+          value: set image deployment/servebeer-staging-deployment servebeer-staging=crix128/servebeer:latest
+      runAfter:
+        - build-publish-app
