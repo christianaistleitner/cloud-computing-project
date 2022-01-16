@@ -42,6 +42,16 @@ spec:
   - name: docker-push
     image: docker
     env:
+    - name: USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: $(params.docker-credentials-secret)
+          key: username
+    - name: TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: $(params.docker-credentials-secret)
+          key: password
     # Connect to the sidecar over TCP, with TLS.
     - name: DOCKER_HOST
       value: tcp://localhost:2376
