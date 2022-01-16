@@ -13,10 +13,9 @@ spec:
   - name: context
     description: Path to the directory to use as context.
     default: .
-  - name: docker-username
-    description: Username for login on Docker Hub
-  - name: docker-password
-    description: Password or token for login on Docker Hub.
+  - name: docker-credentials-secret
+    description: Secret name containing username and password for login on Docker Hub.
+    default: docker-credentials
   workspaces:
   - name: source
   results:
@@ -36,10 +35,20 @@ spec:
   - name: docker-login
     image: docker
     env:
+    - name: USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: $(params.docker-credentials-secret)
+          key: username
+    - name: PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: $(params.docker-credentials-secret)
+          key: password
     - name: DOCKER_TLS_CERTDIR
       value: /certs/client
     workingDir: $(workspaces.source.path)
-    script: docker login -u $(params.docker-username) -p $(params.docker-password)
+    script: docker login -u $USERNAME -p $PASSWORD
     volumeMounts:
       - mountPath: /certs/client
         name: dind-certs

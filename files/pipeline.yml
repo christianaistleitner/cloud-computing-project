@@ -26,16 +26,6 @@ spec:
       params:
         - name: image
           value: crix128/servebeer:latest
-        - name: docker-username
-          valueFrom:
-            secretKeyRef:
-              name: docker-credentials
-              key: username
-        - name: docker-password
-          valueFrom:
-            secretKeyRef:
-              name: docker-credentials
-              key: password
       workspaces:
         - name: source
           workspace: source-code
