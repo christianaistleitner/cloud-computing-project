@@ -20,5 +20,4 @@ spec:
   steps:
   - name: kubectl
     image: bitnami/kubectl:latest
-    args:
-      - kubectl $(params.args)
+    script: kubectl $(params.args)
