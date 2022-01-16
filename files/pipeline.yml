@@ -38,4 +38,4 @@ spec:
         - name: args
           value: set image deployment/servebeer-staging-deployment servebeer-staging=crix128/servebeer:latest
       runAfter:
-        - build-publish-app
+        - build-image
