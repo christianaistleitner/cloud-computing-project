@@ -1,0 +1,32 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: trigger-demo-template
+  annotations:
+    triggers.tekton.dev/old-escape-quotes: "true"
+spec:
+  params:
+    - name: commits
+      description: The commits which got pushed
+    - name: gitRepository
+      description: The git repository that hosts context
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: config-refresh-run-
+        annotations:
+          tekton.dev/gitURL: "$(tt.params.gitRepository)"
+      spec:
+        pipelineRef:
+          name: config-refresh-pipeline
+        params:
+          - name: commits
+            value: "$(tt.params.commits)"
+          - name: filename
+            value: "config.yaml"
+          - name: urlToCurl
+            value: https://api.hub.tekton.dev/categories
+          - name: options
+            value:
+              ["-i", "-k", "-X", "GET"]
