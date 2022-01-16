@@ -21,4 +21,4 @@ spec:
   - name: kubectl
     image: bitnami/kubectl:latest
     args:
-      - $(params.args)
+      - kubectl $(params.args)
