@@ -166,7 +166,55 @@ spec:
 **Pipeline**
 
 ```
-
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: main-pipeline
+spec:
+  params:
+    - name: git-url
+      type: string
+    - name: git-revision
+      type: string
+    - name: deployment-name
+      type: string
+    - name: container-name
+      type: string
+    - name: image-name
+      type: string
+  workspaces:
+    - name: source-code
+  tasks:
+    - name: clone-repo
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: source-code
+    - name: build-image
+      taskRef:
+        name: docker-publish
+      params:
+        - name: image
+          value: $(params.image-name)
+      workspaces:
+        - name: source
+          workspace: source-code
+      runAfter:
+        - clone-repo
+    - name: deploy-app
+      taskRef:
+        name: kubectl
+      params:
+        - name: args
+          value: set image deployment/$(params.deployment-name) $(params.container-name)=$(params.image-name)
+      runAfter:
+        - build-image
 ```
 
 ### Step 4: Trigger
@@ -218,7 +266,6 @@ spec:
   - name: gitrevision
     value: $(body.ref)
 ```
-
 
 **TriggerTemplate**
 
