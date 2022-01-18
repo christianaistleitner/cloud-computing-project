@@ -13,13 +13,17 @@ Project Idea: _Implementation of a Continuous Deployment (CD) Pipeline using Tek
 - [Marcel Brunnbauer](https://github.com/Marcel256)
 - [Martin Zwifl](https://github.com/martin-zwifl)
 
-## Some threory here
+## Research
 
 TODO
 
-## Deployment Structure
+## Tutorial
 
-### Deployments
+### Step 1: Install
+
+TODO
+
+### Step 2: Deployments
 
 We have to following deployments...TODO
 
@@ -69,7 +73,7 @@ spec:
         - containerPort: 8080
 ```
 
-### Services
+**Services**
 
 
 
@@ -102,7 +106,7 @@ spec:
   type: ClusterIP
 ```
 
-### Ingress
+**Ingress**
 
 ```
 apiVersion: networking.k8s.io/v1
@@ -142,6 +146,14 @@ spec:
                 number: 8080
 ```
 
-## Pipeline Structure
+### Step 2: Pipeline
+
+TODO
+
+### Step 4: Trigger
+
+TODO
+
+## Lessons-learned
 
 TODO
