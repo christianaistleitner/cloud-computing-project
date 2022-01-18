@@ -170,13 +170,155 @@ spec:
                 number: 8080
 ```
 
-### Step 2: Pipeline
+### Step 3: Pipeline
 
-TODO
+**Pipeline**
+
+```
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: main-pipeline
+spec:
+  params:
+    - name: git-url
+      type: string
+    - name: git-revision
+      type: string
+    - name: deployment-name
+      type: string
+    - name: container-name
+      type: string
+    - name: image-name
+      type: string
+  workspaces:
+    - name: source-code
+  tasks:
+    - name: clone-repo
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: source-code
+    - name: build-image
+      taskRef:
+        name: docker-publish
+      params:
+        - name: image
+          value: $(params.image-name)
+      workspaces:
+        - name: source
+          workspace: source-code
+      runAfter:
+        - clone-repo
+    - name: deploy-app
+      taskRef:
+        name: kubectl
+      params:
+        - name: args
+          value: set image deployment/$(params.deployment-name) $(params.container-name)=$(params.image-name)
+      runAfter:
+        - build-image
+```
 
 ### Step 4: Trigger
 
-TODO
+**EventListener**
+
+```
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: github-listener
+spec:
+  triggers:
+    - name: git-listener-trigger
+      interceptors:
+        - ref:
+            name: github
+          params:
+            - name: secretRef
+              value:
+                secretName: github-webhook-secret
+                secretKey: token
+            - name: "eventTypes"
+              value: ["push"]
+      bindings:
+        - ref: git-push-binding
+        - name: git-url
+          value: https://github.com/dstar55/docker-hello-world-spring-boot.git
+        - name: deployment-name
+          value: servebeer-staging-deployment
+        - name: container-name
+          value: servebeer-staging
+        - name: image-name
+          value: crix128/servebeer:latest
+      template:
+        ref: main-pipeline-trigger-template
+
+```
+
+**TriggerBinding**
+
+```
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: git-push-binding
+spec:
+  params:
+  - name: gitrevision
+    value: $(body.ref)
+```
+
+**TriggerTemplate**
+
+```
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: main-pipeline-trigger-template
+spec:
+  params:
+    - name: git-url
+    - name: git-revision
+    - name: deployment-name
+    - name: container-name
+    - name: image-name
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: triggered-pipeline-run-
+      spec:
+        pipelineRef:
+          name: main-pipeline
+        params:
+          - name: git-url
+            value: $(tt.params.git-url)
+          - name: git-revision
+            value: $(tt.params.git-revision)
+          - name: deployment-name
+            value: $(tt.params.deployment-name)
+          - name: container-name
+            value: $(tt.params.container-name)
+          - name: image-name
+            value: $(tt.params.image-name)
+        workspaces:
+        - name: source-code
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 1Gi
+```
 
 ## Lessons-learned
 
