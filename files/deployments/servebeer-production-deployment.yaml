@@ -14,6 +14,7 @@ spec:
     spec:
       containers:
       - name: servebeer-production
-        image: crix128/servebeer:0.0.1
+        image: crix128/servebeer:stable
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080

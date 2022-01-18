@@ -14,6 +14,7 @@ spec:
     spec:
       containers:
       - name: servebeer-staging
-        image: crix128/servebeer:0.0.1
+        image: crix128/servebeer:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
