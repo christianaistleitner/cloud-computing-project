@@ -5,9 +5,9 @@ University: _Johannes Kepler University Linz_
 
 ## Members
 
-- Christian Aistleitner
-- Marcel Brunnbauer
-- Martin Zwifl
+- Christian Aistleitner ([@christianaistleitner](https://github.com/christianaistleitner))
+- Marcel Brunnbauer ([@Marcel256](https://github.com/Marcel256))
+- Martin Zwifl ([@martin-zwifl](https://github.com/martin-zwifl))
 
 ## Project Idea
 
