@@ -4,34 +4,34 @@ metadata:
   name: github-listener
 spec:
   triggers:
-#   - name: staging-trigger
-#     interceptors:
-#       - ref:
-#           name: github
-#         params:
-#           - name: secretRef
-#             value:
-#               secretName: github-webhook-secret
-#               secretKey: token
-#           - name: "eventTypes"
-#             value: ["push"]
-#       - ref:
-#           name: cel
-#         params:
-#           - name: "filter"
-#             value: "body.ref == 'refs/heads/master'"
-#     bindings:
-#       - ref: git-push-binding
-#       - name: git-url
-#         value: https://github.com/dstar55/docker-hello-world-spring-boot.git
-#       - name: deployment-name
-#         value: servebeer-staging-deployment
-#       - name: container-name
-#         value: servebeer-staging
-#       - name: image-name
-#         value: crix128/servebeer:latest
-#     template:
-#       ref: main-pipeline-trigger-template
+    - name: staging-trigger
+      interceptors:
+        - ref:
+            name: github
+          params:
+            - name: secretRef
+              value:
+                secretName: github-webhook-secret
+                secretKey: token
+            - name: "eventTypes"
+              value: ["push"]
+        - ref:
+            name: cel
+          params:
+            - name: "filter"
+              value: "body.ref == 'refs/heads/master'"
+      bindings:
+        - ref: git-push-binding
+        - name: git-url
+          value: https://github.com/dstar55/docker-hello-world-spring-boot.git
+        - name: deployment-name
+          value: servebeer-staging-deployment
+        - name: container-name
+          value: servebeer-staging
+        - name: image-name
+          value: crix128/servebeer:latest
+      template:
+        ref: main-pipeline-trigger-template
     - name: production-trigger
       interceptors:
         - ref:
