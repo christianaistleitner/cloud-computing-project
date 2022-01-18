@@ -26,3 +26,12 @@ spec:
             name: servebeer-production-service
             port:
               number: 8888
+  - http:
+      paths:
+        - path: /hooks/github
+          pathType: Exact
+          backend:
+            service:
+              name: el-github-listener
+              port:
+                number: 8080
