@@ -2,8 +2,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: servebeer-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
   - host: staging.servebeer.com
@@ -15,7 +13,7 @@ spec:
           service:
             name: servebeer-staging-service
             port:
-              number: 8001
+              number: 8080
   - host: production.servebeer.com
     http:
       paths:
@@ -25,7 +23,7 @@ spec:
           service:
             name: servebeer-production-service
             port:
-              number: 8888
+              number: 8080
   - http:
       paths:
         - path: /hooks/github
