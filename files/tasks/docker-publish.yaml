@@ -35,7 +35,7 @@ spec:
     - name: DOCKER_CERT_PATH
       value: /certs/client
     workingDir: $(workspaces.source.path)
-    script: docker build --no-cache -f $(params.dockerfile) -t $(params.image) $(params.context)
+    script: sleep 900; docker build --no-cache -f $(params.dockerfile) -t $(params.image) $(params.context)
     volumeMounts:
       - mountPath: /certs/client
         name: dind-certs
