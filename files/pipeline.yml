@@ -3,11 +3,17 @@ kind: Pipeline
 metadata:
   name: main-pipeline
 spec:
-#  resources:
-#    - name: my-repo
-#      type: git
-#    - name: my-image
-#      type: image
+  params:
+    - name: git-url
+      type: string
+    - name: git-revision
+      type: string
+    - name: deployment-name
+      type: string
+    - name: container-name
+      type: string
+    - name: image-name
+      type: string
   workspaces:
     - name: source-code
   tasks:
@@ -16,7 +22,9 @@ spec:
         name: git-clone
       params:
         - name: url
-          value: https://github.com/dstar55/docker-hello-world-spring-boot.git
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-revision)
       workspaces:
         - name: output
           workspace: source-code
@@ -25,7 +33,7 @@ spec:
         name: docker-publish
       params:
         - name: image
-          value: crix128/servebeer:latest
+          value: $(params.image-name)
       workspaces:
         - name: source
           workspace: source-code
@@ -36,6 +44,6 @@ spec:
         name: kubectl
       params:
         - name: args
-          value: set image deployment/servebeer-staging-deployment servebeer-staging=crix128/servebeer:latest
+          value: set image deployment/$(params.deployment-name) $(params.container-name)=$(params.image-name)
       runAfter:
         - build-image
