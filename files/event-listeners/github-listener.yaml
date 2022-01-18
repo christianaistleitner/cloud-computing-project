@@ -23,7 +23,7 @@ spec:
       bindings:
         - ref: git-push-binding
         - name: git-url
-          value: https://github.com/dstar55/docker-hello-world-spring-boot.git
+          value: https://github.com/Marcel256/cloud-computing-demo.git
         - name: deployment-name
           value: servebeer-staging-deployment
         - name: container-name
@@ -51,7 +51,7 @@ spec:
       bindings:
         - ref: git-push-binding
         - name: git-url
-          value: https://github.com/dstar55/docker-hello-world-spring-boot.git
+          value: https://github.com/Marcel256/cloud-computing-demo.git
         - name: deployment-name
           value: servebeer-production-deployment
         - name: container-name
