@@ -5,7 +5,8 @@ Last updated: 18.01.2021 17:00
 Lecture: _Special Topics: Cloud Computing Architectures, Processes and Operations (510.211)_ <br>
 University: _Johannes Kepler University Linz_
 
-see [PROPOSAL.md](PROPOSAL.md)
+Project Idea: _Implementation of a Continuous Deployment (CD) Pipeline using Tekton_
+(see [PROPOSAL.md](PROPOSAL.md) for details)
 
 ## Authors
 - [Christian Aistleitner](https://github.com/christianaistleitner)
