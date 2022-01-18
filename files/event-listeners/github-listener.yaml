@@ -27,7 +27,7 @@ spec:
         - name: deployment-name
           value: servebeer-staging-deployment
         - name: container-name
-          value: servebeer-staging
+          value: server
         - name: image-name
           value: crix128/servebeer:latest
       template:
@@ -55,7 +55,7 @@ spec:
         - name: deployment-name
           value: servebeer-production-deployment
         - name: container-name
-          value: servebeer-production
+          value: server
         - name: image-name
           value: crix128/servebeer:stable
       template:

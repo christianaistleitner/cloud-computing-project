@@ -13,7 +13,7 @@ spec:
         app: servebeer-staging
     spec:
       containers:
-      - name: servebeer-staging
+      - name: server
         image: crix128/servebeer:latest
         imagePullPolicy: Always
         ports:

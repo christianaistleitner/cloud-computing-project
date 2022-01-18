@@ -13,7 +13,7 @@ spec:
         app: servebeer-production
     spec:
       containers:
-      - name: servebeer-production
+      - name: server
         image: crix128/servebeer:stable
         imagePullPolicy: Always
         ports:
