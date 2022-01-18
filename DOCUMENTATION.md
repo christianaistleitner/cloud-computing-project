@@ -67,7 +67,7 @@ spec:
 
 
 
-Note: A Service can map any incoming port to a targetPort. By default and for convenience, the targetPort is set to the same value as the port field.
+Note: A Service can map any incoming `port` to a `targetPort`. By default and for convenience, the `targetPort` is set to the same value as the `port` field.
 
 ```
 apiVersion: v1
@@ -95,3 +95,7 @@ spec:
     app: servebeer-production
   type: ClusterIP
   ```
+
+## Pipeline Structure
+
+TODO
