@@ -34,9 +34,9 @@ Kubernetes integration:
 
 ## Tutorial
 
-### Step 1: Prerequisites
+### Step 0: Prerequisites
 
-A Kubernetes cluster, we used [minikube](https://minikube.sigs.k8s.io/) on a VPS running Ubuntu 21.04.
+A Kubernetes cluster - we used [minikube](https://minikube.sigs.k8s.io/) on a VPS running Ubuntu 21.04.
 
 ### Step 1: Install
 
@@ -47,7 +47,7 @@ To install it, follow the instructions on https://tekton.dev/docs/dashboard/#ins
 
 For debugging purposes, the Tekton CLI tool might be really useful. To install it, follow the instructions on https://tekton.dev/docs/cli/#installation.
 
-### Step 2: Deployments
+### Step 2: Deployment
 
 We have to following deployments...TODO
 
