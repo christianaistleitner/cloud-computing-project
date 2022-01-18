@@ -15,7 +15,22 @@ Project Idea: _Implementation of a Continuous Deployment (CD) Pipeline using Tek
 
 ## Research
 
-TODO
+Tekton is an open-source cloud-native Continuous Integration and Deployment solution running on Kubernetes clusters. It can be separated into the following components:
+
+Building blocks of a workflow:
+- [Pipelines](https://tekton.dev/docs/pipelines) execute tasks which themself contain one or multiple steps
+- [Triggers](https://tekton.dev/docs/triggers) instantiate pipelines runs and ensure the right timing within workflows
+
+Workflow management:
+- [Command-Line-Interface](https://tekton.dev/docs/cli) for workflow management
+- [Dashboard](https://tekton.dev/docs/dashboard) in case you prefer a graphical interface
+
+Workflow repository:
+- [Catalog](https://tekton.dev/docs/catalog) is a repository containing predefined building blocks
+- [Hub](https://hub.tekton.dev/) is a web app used for accessing the Tekton Catalog
+
+Kubernetes integration:
+- [Operator](https://tekton.dev/docs/operator) is a Kubernetes extension that allows us to manage Tekton components
 
 ## Tutorial
 
