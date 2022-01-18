@@ -1,0 +1,39 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: main-pipeline-trigger-template
+spec:
+  params:
+    - name: git-url
+    - name: git-revision
+    - name: deployment-name
+    - name: container-name
+    - name: image-name
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: triggered-pipeline-run-
+      spec:
+        pipelineRef:
+          name: main-pipeline
+        params:
+          - name: git-url
+            value: $(tt.params.git-url)
+          - name: git-revision
+            value: $(tt.params.git-revision)
+          - name: deployment-name
+            value: $(tt.params.deployment-name)
+          - name: container-name
+            value: $(tt.params.container-name)
+          - name: image-name
+            value: $(tt.params.image-name)
+        workspaces:
+        - name: source-code
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 1Gi
