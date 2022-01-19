@@ -421,6 +421,9 @@ kubectl apply -f ./files/pipeline
 
 **TriggerBinding**
 
+With a TriggerBinding it is specified what parameters should be extracted from the event payload. In this case we are interested in the ```body.ref```.
+
+The following code is also available in the repository at ```./files/trigger/git-push-binding.yaml```
 ```
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerBinding
@@ -434,6 +437,9 @@ spec:
 
 **TriggerTemplate**
 
+The TriggerTemplate specifies what pipeline should be run when the EventListener detects an event. It also provides the necessary parameters from the EventListener (originally from TriggerBinding).
+
+The following code is also available in the repository at ```./files/trigger/main-pipeline-trigger-template.yaml```
 ```
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
