@@ -44,6 +44,7 @@ spec:
         name: kubectl
       params:
         - name: args
-          value: set image deployment/$(params.deployment-name) $(params.container-name)=$(params.image-name)
+          # value: set image deployment/$(params.deployment-name) $(params.container-name)=$(params.image-name)
+          value: rollout restart deployment/$(params.deployment-name)
       runAfter:
         - build-image
