@@ -174,15 +174,6 @@ spec:
                 number: 8080
 ```
 
-Now, all of those yaml files need to be applied on the cluster.
-This can be done by executing
-
-```kubectl apply -f <filename>```
-
-for every file shown above **or** in case you cloned this git repositroy, by executing
-
-```kubectl apply ./files/deployment```
-
 ### Step 3: Pipeline
 
 **Pipeline**
@@ -237,10 +228,6 @@ spec:
           value: set image deployment/$(params.deployment-name) $(params.container-name)=$(params.image-name)
       runAfter:
         - build-image
-```
-Applying all the yaml files referenced to the section pipeline can be either done seperately or all in one by applying the whole directory:
-```console
-kubectl apply -f ./files/pipeline
 ```
 
 **Task**
@@ -355,6 +342,11 @@ spec:
   - name: dind-certs
     emptyDir: {}
 ```
+  
+Applying all the yaml files referenced to the section pipeline/tasks can be either done seperately or all in one by applying the whole directory:
+```console
+kubectl apply -f ./files/pipeline
+```
 
 ### Step 4: Trigger
 
@@ -448,6 +440,11 @@ spec:
               resources:
                 requests:
                   storage: 1Gi
+```
+
+Applying all the yaml files referenced to the section trigger can be either done seperately or all in one by applying the whole directory:
+```console
+kubectl apply -f ./files/trigger
 ```
 
 ## Lessons-learned
