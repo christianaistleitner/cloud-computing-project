@@ -174,6 +174,15 @@ spec:
                 number: 8080
 ```
 
+Now, all of those yaml files need to be applied on the cluster.
+This can be done by executing
+
+```kubectl apply -f <filename>```
+
+for every file shown above **or** in case you cloned this git repositroy, by executing
+
+```kubectl apply ./files/deployment```
+
 ### Step 3: Pipeline
 
 **Pipeline**
