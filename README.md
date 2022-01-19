@@ -36,6 +36,13 @@ Kubernetes integration:
 
 ![Architecture Diagram](./assets/arch2.png)
 
+Our system is based on a 2 stage deployment for a simple web application. The source code of the application is hosted on a seperate Github repository. This repository contains a branch for each deployment stage(master and stable).
+When a new commit is pushed to the repository, a webhook notifies the Trigger in Tekton about the changes in the code. The Trigger starts the pipeline and passes the target stage as parameter depending on which branch has been changed.
+The pipeline starts by cloning the corresponding branch from the repository and builds a new Docker image.
+Depending on the target stage, the image is tagged with either latest (master branch) or stable.
+The newly built image is then pushed to DockerHub.
+In the last step of the pipeline, the current image used in the Deployment stage is changed to the new image. 
+
 ## Tutorial
 
 ### Step 0: Prerequisites
