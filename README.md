@@ -53,7 +53,27 @@ For debugging purposes, the Tekton CLI tool might be really useful. To install i
 
 ### Step 2: Deployment
 
-We have to following deployments...TODO
+All yaml files shown in this section need to be applied on the cluster.
+This can be done by either executing
+
+```console
+kubectl apply -f <filename>
+```
+
+for every single file **or** in case you cloned this git repositroy, by executing
+
+```console
+kubectl apply ./files/deployment
+```
+
+which will apply all of those files at once.
+
+**Deployments**
+
+In order to deploy the sample web application (https://github.com/Marcel256/cloud-computing-demo), the following deployment yaml files need to be created.
+
+For simplicity reasons, the docker image will be overwritten on every build, i.e. we reuse `latest` and `stable` tags on very image build.
+In order to ignore the cached version on the kubernetes node, we specify `imagePullPolicy: Always` to allways pull the image from DockerHub.
 
 ```
 apiVersion: apps/v1
@@ -77,6 +97,8 @@ spec:
         ports:
         - containerPort: 8080
 ```
+
+The above one was for the staging envirnonment, the next one will be for the production envirnonment.
 
 ```
 apiVersion: apps/v1
@@ -103,7 +125,8 @@ spec:
 
 **Services**
 
-
+In oder to be able to connect the deployments and ingress, the following services need to be configured. <br>
+A service is an abstraction layer and basically maps a cluster internal IP to the set of pods deployed earlier.
 
 Note: A Service can map any incoming `port` to a `targetPort`. By default and for convenience, the `targetPort` is set to the same value as the `port` field.
 
@@ -135,6 +158,13 @@ spec:
 ```
 
 **Ingress**
+
+Finally, Ingress needs to be configured.
+It will forward incoming HTTP requests to its associated service.
+
+For example, any request with the header ```HOST staging.servebeer.com``` set will be forwarded to our `servebeer-staging-service` service.
+
+The third ingress rule handles webhooks sent by GitHub. It checks whether its path equals `/hooks/github` and forwards the request to a special service created by Tekton. More on that later in *Step 4: Trigger*.
 
 ```
 apiVersion: networking.k8s.io/v1
@@ -172,19 +202,6 @@ spec:
               name: el-github-listener
               port:
                 number: 8080
-```
-
-Finally, all of those yaml files need to be applied on the cluster.
-This can be done by either executing
-
-```console
-kubectl apply -f <filename>
-```
-
-for every file shown above **or** in case you cloned this git repositroy, by executing
-
-```console
-kubectl apply ./files/deployment
 ```
 
 ### Step 3: Pipeline
