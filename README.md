@@ -206,61 +206,9 @@ spec:
 
 ### Step 3: Pipeline
 
-**Pipeline**
-
-```
-apiVersion: tekton.dev/v1beta1
-kind: Pipeline
-metadata:
-  name: main-pipeline
-spec:
-  params:
-    - name: git-url
-      type: string
-    - name: git-revision
-      type: string
-    - name: deployment-name
-      type: string
-    - name: container-name
-      type: string
-    - name: image-name
-      type: string
-  workspaces:
-    - name: source-code
-  tasks:
-    - name: clone-repo
-      taskRef:
-        name: git-clone
-      params:
-        - name: url
-          value: $(params.git-url)
-        - name: revision
-          value: $(params.git-revision)
-      workspaces:
-        - name: output
-          workspace: source-code
-    - name: build-image
-      taskRef:
-        name: docker-publish
-      params:
-        - name: image
-          value: $(params.image-name)
-      workspaces:
-        - name: source
-          workspace: source-code
-      runAfter:
-        - clone-repo
-    - name: deploy-app
-      taskRef:
-        name: kubectl
-      params:
-        - name: args
-          value: set image deployment/$(params.deployment-name) $(params.container-name)=$(params.image-name)
-      runAfter:
-        - build-image
-```
-
 **Task**
+
+The task kubectl is used for executing kubectl commands. It is used for deployment and uses only one parameter ```args``` specifying the command to be issued.
 
 kubectl.yaml
 ```
@@ -278,6 +226,25 @@ spec:
     image: bitnami/kubectl:latest
     script: kubectl $(params.args)
 ```
+
+The docker-credentials.yml needs to be EDITED in order to work properly. Insert your own username and token before applying.
+
+docker-credentials.yml
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: docker-credentials
+  annotations:
+    tekton.dev/docker-0: https://hub.docker.com
+type: kubernetes.io/basic-auth
+stringData:
+  username: <username>
+  password: <token>
+```
+
+
+The docker-publish task got installed via Tekton Hub (```docker-build```) but didn't work in our case so was modified to the code beneath. It receives only the parameter ```image``` from the pipeline while others use the specified default. The sidecar is used to host a docker service as it needs to live among all steps.
 
 docker-publish.yaml
 ```
@@ -372,16 +339,95 @@ spec:
   - name: dind-certs
     emptyDir: {}
 ```
+
+**Pipeline**
+
+The main-pipeline.yaml is the single-one pipeline used for this sample project and therefore defines the flow of the tasks ```clone-repo```, ```build-image``` and ```deploy-app```. When called, it receives the parameters ```git-url```, ```git-revision```, ```deployment-name```, ```container-name``` and ```image-name```. Those are needed in order to access the right repository, refer to the advised image name and deploy the right application.
+
+The task ```clone-repo``` (ref:```git-clone```) is publicly available and can be installed by executing the following command:
+
+```console
+kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-clone/0.5/git-clone.yaml
+```
+
+The following code is also available in the repository at ./files/main-pipeline.yaml
+```
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: main-pipeline
+spec:
+  params:
+    - name: git-url
+      type: string
+    - name: git-revision
+      type: string
+    - name: deployment-name
+      type: string
+    - name: container-name
+      type: string
+    - name: image-name
+      type: string
+  workspaces:
+    - name: source-code
+  tasks:
+    - name: clone-repo
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: source-code
+    - name: build-image
+      taskRef:
+        name: docker-publish
+      params:
+        - name: image
+          value: $(params.image-name)
+      workspaces:
+        - name: source
+          workspace: source-code
+      runAfter:
+        - clone-repo
+    - name: deploy-app
+      taskRef:
+        name: kubectl
+      params:
+        - name: args
+          value: set image deployment/$(params.deployment-name) $(params.container-name)=$(params.image-name)
+      runAfter:
+        - build-image
+```
   
-Applying all the yaml files referenced to the section pipeline/tasks can be either done seperately or all in one by applying the whole directory:
+Applying all the yaml files referenced to the section taks and pipeline can be either done seperately or all in one by applying the whole directory, executing the following command:
 ```console
 kubectl apply -f ./files/pipeline
 ```
 
 ### Step 4: Trigger
 
+Github secret needs to be EDITED. Your own token needs to be inserted.
+
+github-listener.yaml
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: github-webhook-secret
+type: Opaque
+stringData:
+  token: <token>
+```
+
 **EventListener**
 
+Webhook calles on-push our EventListener which triggers either the staging-trigger or the production-trigger depending on the branch that was pushed. To differentiate this we use a filter on the received body.
+
+github-listener.yaml
 ```
 apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
