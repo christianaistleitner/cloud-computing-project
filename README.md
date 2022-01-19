@@ -574,6 +574,7 @@ kubectl apply -f ./files/trigger
 
 ## Lessons-learned
 
-- Item 1
-- Item 2
-- Item 3
+- Tekton docs is very detailed at certain points but lack on others
+- handing over information (or parameters) from one instance to another can cause troubles if not done correctly
+- some parts of Tekton need to be installed to work properly
+- Tekton can yield very misleading error messages
