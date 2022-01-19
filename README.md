@@ -219,7 +219,7 @@ spec:
 
 The task kubectl is used for executing kubectl commands. It is used for deployment and uses only one parameter ```args``` specifying the command to be issued.
 
-kubectl.yaml
+The following code is also available in the repository at ```./files/pieline/kubectl.yaml```
 ```
 apiVersion: tekton.dev/v1beta1
 kind: Task
@@ -238,7 +238,7 @@ spec:
 
 The docker-credentials.yml needs to be EDITED in order to work properly. Insert your own username and token before applying.
 
-docker-credentials.yml
+The following code is also available in the repository at ```./files/pieline/docker-credentials.yml```
 ```
 apiVersion: v1
 kind: Secret
@@ -255,7 +255,7 @@ stringData:
 
 The docker-publish task got installed via Tekton Hub (```docker-build```) but didn't work in our case so was modified to the code beneath. It receives only the parameter ```image``` from the pipeline while others use the specified default. The sidecar is used to host a docker service as it needs to live among all steps.
 
-docker-publish.yaml
+The following code is also available in the repository at ```./files/pieline/docker-publish.yaml```
 ```
 apiVersion: tekton.dev/v1beta1
 kind: Task
@@ -359,7 +359,7 @@ The task ```clone-repo``` (ref:```git-clone```) is publicly available and can be
 kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-clone/0.5/git-clone.yaml
 ```
 
-The following code is also available in the repository at ./files/main-pipeline.yaml
+The following code is also available in the repository at ```./files/pipeline/main-pipeline.yaml```
 ```
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -411,7 +411,7 @@ spec:
       runAfter:
         - build-image
 ```
-  
+
 Applying all the yaml files referenced to the section taks and pipeline can be either done seperately or all in one by applying the whole directory, executing the following command:
 ```console
 kubectl apply -f ./files/pipeline
@@ -419,9 +419,68 @@ kubectl apply -f ./files/pipeline
 
 ### Step 4: Trigger
 
-Github secret needs to be EDITED. Your own token needs to be inserted.
+**TriggerBinding**
 
-github-listener.yaml
+```
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: git-push-binding
+spec:
+  params:
+  - name: gitrevision
+    value: $(body.ref)
+```
+
+**TriggerTemplate**
+
+```
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: main-pipeline-trigger-template
+spec:
+  params:
+    - name: git-url
+    - name: git-revision
+    - name: deployment-name
+    - name: container-name
+    - name: image-name
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: triggered-pipeline-run-
+      spec:
+        pipelineRef:
+          name: main-pipeline
+        params:
+          - name: git-url
+            value: $(tt.params.git-url)
+          - name: git-revision
+            value: $(tt.params.git-revision)
+          - name: deployment-name
+            value: $(tt.params.deployment-name)
+          - name: container-name
+            value: $(tt.params.container-name)
+          - name: image-name
+            value: $(tt.params.image-name)
+        workspaces:
+        - name: source-code
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 1Gi
+```
+
+**GithubSecret**
+
+The Github secret needs to be EDITED. Your own ```token``` needs to be inserted.
+
+The following code is also available in the repository at ```./files/trigger/github-secret.yaml```
 ```
 apiVersion: v1
 kind: Secret
@@ -434,9 +493,9 @@ stringData:
 
 **EventListener**
 
-Webhook calles on-push our EventListener which triggers either the staging-trigger or the production-trigger depending on the branch that was pushed. To differentiate this we use a filter on the received body.
+Webhook calles on-push our EventListener which triggers either the ```staging-trigger``` or the ```production-trigger``` depending on the branch that was pushed. To differentiate this we use a filter on the received body.
 
-github-listener.yaml
+The following code is also available in the repository at ```./files/trigger/github-listener.yaml```
 ```
 apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
@@ -500,63 +559,6 @@ spec:
           value: crix128/servebeer:stable
       template:
         ref: main-pipeline-trigger-template
-```
-
-**TriggerBinding**
-
-```
-apiVersion: triggers.tekton.dev/v1alpha1
-kind: TriggerBinding
-metadata:
-  name: git-push-binding
-spec:
-  params:
-  - name: gitrevision
-    value: $(body.ref)
-```
-
-**TriggerTemplate**
-
-```
-apiVersion: triggers.tekton.dev/v1beta1
-kind: TriggerTemplate
-metadata:
-  name: main-pipeline-trigger-template
-spec:
-  params:
-    - name: git-url
-    - name: git-revision
-    - name: deployment-name
-    - name: container-name
-    - name: image-name
-  resourcetemplates:
-    - apiVersion: tekton.dev/v1beta1
-      kind: PipelineRun
-      metadata:
-        generateName: triggered-pipeline-run-
-      spec:
-        pipelineRef:
-          name: main-pipeline
-        params:
-          - name: git-url
-            value: $(tt.params.git-url)
-          - name: git-revision
-            value: $(tt.params.git-revision)
-          - name: deployment-name
-            value: $(tt.params.deployment-name)
-          - name: container-name
-            value: $(tt.params.container-name)
-          - name: image-name
-            value: $(tt.params.image-name)
-        workspaces:
-        - name: source-code
-          volumeClaimTemplate:
-            spec:
-              accessModes:
-                - ReadWriteOnce
-              resources:
-                requests:
-                  storage: 1Gi
 ```
 
 Applying all the yaml files referenced to the section trigger can be either done seperately or all in one by applying the whole directory:
