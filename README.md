@@ -242,10 +242,6 @@ spec:
       runAfter:
         - build-image
 ```
-Applying all the yaml files referenced to the section pipeline can be either done seperately or all in one by applying the whole directory:
-```console
-kubectl apply -f ./files/pipeline
-```
 
 **Task**
 
@@ -359,6 +355,11 @@ spec:
   - name: dind-certs
     emptyDir: {}
 ```
+  
+Applying all the yaml files referenced to the section pipeline/tasks can be either done seperately or all in one by applying the whole directory:
+```console
+kubectl apply -f ./files/pipeline
+```
 
 ### Step 4: Trigger
 
@@ -452,6 +453,11 @@ spec:
               resources:
                 requests:
                   storage: 1Gi
+```
+
+Applying all the yaml files referenced to the section trigger can be either done seperately or all in one by applying the whole directory:
+```console
+kubectl apply -f ./files/trigger
 ```
 
 ## Lessons-learned
