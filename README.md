@@ -1,6 +1,6 @@
 # Cloud Computing Project - Team 4
 
-Last updated: 19.01.2021 14:00
+Last updated: 18.01.2021 17:00
 
 Lecture: _Special Topics: Cloud Computing Architectures, Processes and Operations (510.211)_ <br>
 University: _Johannes Kepler University Linz_
@@ -36,15 +36,6 @@ Kubernetes integration:
 
 ![Architecture Diagram](./assets/arch2.png)
 
-Our system is based on a 2 stage deployment for a simple web application. The source code of the application is hosted on a seperate Github repository. This repository contains a branch for each deployment stage(master and stable).
-
-When a new commit is pushed to the repository, a webhook notifies the Trigger in Tekton about the changes in the code. The Trigger starts the pipeline and passes the target stage as parameter depending on which branch has been changed.
-
-The pipeline starts by cloning the corresponding branch from the repository and builds a new Docker image.
-Depending on the target stage, the image is tagged with either latest (master branch) or stable.
-The newly built image is then pushed to DockerHub.
-In the last step of the pipeline, the current image used in the Deployment stage is changed to the new image.
-
 ## Tutorial
 
 ### Step 0: Prerequisites
@@ -62,27 +53,7 @@ For debugging purposes, the Tekton CLI tool might be really useful. To install i
 
 ### Step 2: Deployment
 
-All yaml files shown in this section need to be applied on the cluster.
-This can be done by either executing
-
-```console
-kubectl apply -f <filename>
-```
-
-for every single file **or** in case you cloned this git repositroy, by executing
-
-```console
-kubectl apply ./files/deployment
-```
-
-which will apply all of those files at once.
-
-**Deployments**
-
-In order to deploy the sample web application (https://github.com/Marcel256/cloud-computing-demo), the following deployment yaml files need to be created.
-
-For simplicity reasons, the docker image will be overwritten on every build, i.e. we reuse `latest` and `stable` tags on very image build.
-In order to ignore the cached version on the kubernetes node, we specify `imagePullPolicy: Always` to allways pull the image from DockerHub.
+We have to following deployments...TODO
 
 ```
 apiVersion: apps/v1
@@ -106,8 +77,6 @@ spec:
         ports:
         - containerPort: 8080
 ```
-
-The above one was for the staging envirnonment, the next one will be for the production envirnonment.
 
 ```
 apiVersion: apps/v1
@@ -134,8 +103,7 @@ spec:
 
 **Services**
 
-In oder to be able to connect the deployments and ingress, the following services need to be configured. <br>
-A service is an abstraction layer and basically maps a cluster internal IP to the set of pods deployed earlier.
+
 
 Note: A Service can map any incoming `port` to a `targetPort`. By default and for convenience, the `targetPort` is set to the same value as the `port` field.
 
@@ -167,13 +135,6 @@ spec:
 ```
 
 **Ingress**
-
-Finally, Ingress needs to be configured.
-It will forward incoming HTTP requests to its associated service.
-
-For example, any request with the header ```HOST staging.servebeer.com``` set will be forwarded to our `servebeer-staging-service` service.
-
-The third ingress rule handles webhooks sent by GitHub. It checks whether its path equals `/hooks/github` and forwards the request to a special service created by Tekton. More on that later in *Step 4: Trigger*.
 
 ```
 apiVersion: networking.k8s.io/v1
@@ -213,13 +174,26 @@ spec:
                 number: 8080
 ```
 
+Finally, all of those yaml files need to be applied on the cluster.
+This can be done by either executing
+
+```console
+kubectl apply -f <filename>
+```
+
+for every file shown above **or** in case you cloned this git repositroy, by executing
+
+```console
+kubectl apply ./files/deployment
+```
+
 ### Step 3: Pipeline
 
 **Task**
 
 The task kubectl is used for executing kubectl commands. It is used for deployment and uses only one parameter ```args``` specifying the command to be issued.
 
-kubectl.yaml
+The following code is also available in the repository at ```./files/pieline/kubectl.yaml```
 ```
 apiVersion: tekton.dev/v1beta1
 kind: Task
@@ -238,7 +212,7 @@ spec:
 
 The docker-credentials.yml needs to be EDITED in order to work properly. Insert your own username and token before applying.
 
-docker-credentials.yml
+The following code is also available in the repository at ```./files/pieline/docker-credentials.yml```
 ```
 apiVersion: v1
 kind: Secret
@@ -255,7 +229,7 @@ stringData:
 
 The docker-publish task got installed via Tekton Hub (```docker-build```) but didn't work in our case so was modified to the code beneath. It receives only the parameter ```image``` from the pipeline while others use the specified default. The sidecar is used to host a docker service as it needs to live among all steps.
 
-docker-publish.yaml
+The following code is also available in the repository at ```./files/pieline/docker-publish.yaml```
 ```
 apiVersion: tekton.dev/v1beta1
 kind: Task
@@ -359,7 +333,7 @@ The task ```clone-repo``` (ref:```git-clone```) is publicly available and can be
 kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-clone/0.5/git-clone.yaml
 ```
 
-The following code is also available in the repository at ./files/main-pipeline.yaml
+The following code is also available in the repository at ```./files/pipeline/main-pipeline.yaml```
 ```
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -419,9 +393,68 @@ kubectl apply -f ./files/pipeline
 
 ### Step 4: Trigger
 
-Github secret needs to be EDITED. Your own token needs to be inserted.
+**TriggerBinding**
 
-github-listener.yaml
+```
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: git-push-binding
+spec:
+  params:
+  - name: gitrevision
+    value: $(body.ref)
+```
+
+**TriggerTemplate**
+
+```
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: main-pipeline-trigger-template
+spec:
+  params:
+    - name: git-url
+    - name: git-revision
+    - name: deployment-name
+    - name: container-name
+    - name: image-name
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: triggered-pipeline-run-
+      spec:
+        pipelineRef:
+          name: main-pipeline
+        params:
+          - name: git-url
+            value: $(tt.params.git-url)
+          - name: git-revision
+            value: $(tt.params.git-revision)
+          - name: deployment-name
+            value: $(tt.params.deployment-name)
+          - name: container-name
+            value: $(tt.params.container-name)
+          - name: image-name
+            value: $(tt.params.image-name)
+        workspaces:
+        - name: source-code
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 1Gi
+```
+
+**GithubSecret**
+
+The Github secret needs to be EDITED. Your own ```token``` needs to be inserted.
+
+The following code is also available in the repository at ```./files/trigger/github-secret.yaml```
 ```
 apiVersion: v1
 kind: Secret
@@ -434,9 +467,9 @@ stringData:
 
 **EventListener**
 
-Webhook calles on-push our EventListener which triggers either the staging-trigger or the production-trigger depending on the branch that was pushed. To differentiate this we use a filter on the received body.
+Webhook calles on-push our EventListener which triggers either the ```staging-trigger``` or the ```production-trigger``` depending on the branch that was pushed. To differentiate this we use a filter on the received body.
 
-github-listener.yaml
+The following code is also available in the repository at ```./files/trigger/github-listener.yaml```
 ```
 apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
@@ -500,63 +533,6 @@ spec:
           value: crix128/servebeer:stable
       template:
         ref: main-pipeline-trigger-template
-```
-
-**TriggerBinding**
-
-```
-apiVersion: triggers.tekton.dev/v1alpha1
-kind: TriggerBinding
-metadata:
-  name: git-push-binding
-spec:
-  params:
-  - name: gitrevision
-    value: $(body.ref)
-```
-
-**TriggerTemplate**
-
-```
-apiVersion: triggers.tekton.dev/v1beta1
-kind: TriggerTemplate
-metadata:
-  name: main-pipeline-trigger-template
-spec:
-  params:
-    - name: git-url
-    - name: git-revision
-    - name: deployment-name
-    - name: container-name
-    - name: image-name
-  resourcetemplates:
-    - apiVersion: tekton.dev/v1beta1
-      kind: PipelineRun
-      metadata:
-        generateName: triggered-pipeline-run-
-      spec:
-        pipelineRef:
-          name: main-pipeline
-        params:
-          - name: git-url
-            value: $(tt.params.git-url)
-          - name: git-revision
-            value: $(tt.params.git-revision)
-          - name: deployment-name
-            value: $(tt.params.deployment-name)
-          - name: container-name
-            value: $(tt.params.container-name)
-          - name: image-name
-            value: $(tt.params.image-name)
-        workspaces:
-        - name: source-code
-          volumeClaimTemplate:
-            spec:
-              accessModes:
-                - ReadWriteOnce
-              resources:
-                requests:
-                  storage: 1Gi
 ```
 
 Applying all the yaml files referenced to the section trigger can be either done seperately or all in one by applying the whole directory:
