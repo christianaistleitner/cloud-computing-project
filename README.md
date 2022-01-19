@@ -198,6 +198,7 @@ The task ```clone-repo``` (ref:```git-clone```) is publicly available and can be
 kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-clone/0.5/git-clone.yaml
 ```
 
+The following code is also available in the repository at ./files/main-pipeline.yaml
 ```
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
