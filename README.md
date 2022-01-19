@@ -32,6 +32,10 @@ Workflow repository:
 Kubernetes integration:
 - [Operator](https://tekton.dev/docs/operator) is a Kubernetes extension that allows us to manage Tekton components
 
+## Overview
+
+![Architecture Diagram](./assets/arch2.png)
+
 ## Tutorial
 
 ### Step 0: Prerequisites
