@@ -238,6 +238,10 @@ spec:
       runAfter:
         - build-image
 ```
+Applying all the yaml files referenced to the section pipeline can be either done seperately or all in one by applying the whole directory:
+```console
+kubectl apply -f ./files/pipeline
+```
 
 **Task**
 
