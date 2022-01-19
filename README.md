@@ -578,3 +578,4 @@ kubectl apply -f ./files/trigger
 - handing over information (or parameters) from one instance to another can cause troubles if not done correctly
 - some parts of Tekton need to be installed to work properly
 - Tekton can yield very misleading error messages
+- deploying containerized applications simplifies the switch to a different technology
