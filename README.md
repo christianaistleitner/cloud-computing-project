@@ -190,7 +190,7 @@ kubectl apply ./files/deployment
 ### Step 3: Pipeline
 
 **Pipeline**
-
+The main-pipeline.yaml is the single-one pipeline used for this sample project and therefore defines the flow of the tasks ```clone-repo```, ```build-image``` and ```deploy-app```. When called, it receives the parameters ```git-url```, ```git-revision```, ```deployment-name```, ```container-name``` and ```image-name```. Those are needed in order to access the right repository, refer to the advised image name and deploy the right application.
 ```
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
