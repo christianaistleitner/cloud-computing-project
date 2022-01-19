@@ -372,7 +372,7 @@ metadata:
   name: github-listener
 spec:
   triggers:
-    - name: git-listener-trigger
+    - name: staging-trigger
       interceptors:
         - ref:
             name: github
@@ -383,19 +383,51 @@ spec:
                 secretKey: token
             - name: "eventTypes"
               value: ["push"]
+        - ref:
+            name: cel
+          params:
+            - name: "filter"
+              value: "body.ref == 'refs/heads/master'"
       bindings:
         - ref: git-push-binding
         - name: git-url
-          value: https://github.com/dstar55/docker-hello-world-spring-boot.git
+          value: https://github.com/Marcel256/cloud-computing-demo.git
         - name: deployment-name
           value: servebeer-staging-deployment
         - name: container-name
-          value: servebeer-staging
+          value: server
         - name: image-name
           value: crix128/servebeer:latest
       template:
         ref: main-pipeline-trigger-template
-
+    - name: production-trigger
+      interceptors:
+        - ref:
+            name: github
+          params:
+            - name: secretRef
+              value:
+                secretName: github-webhook-secret
+                secretKey: token
+            - name: "eventTypes"
+              value: ["push"]
+        - ref:
+            name: cel
+          params:
+            - name: "filter"
+              value: "body.ref == 'refs/heads/stable'"
+      bindings:
+        - ref: git-push-binding
+        - name: git-url
+          value: https://github.com/Marcel256/cloud-computing-demo.git
+        - name: deployment-name
+          value: servebeer-production-deployment
+        - name: container-name
+          value: server
+        - name: image-name
+          value: crix128/servebeer:stable
+      template:
+        ref: main-pipeline-trigger-template
 ```
 
 **TriggerBinding**
